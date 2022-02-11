@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "userlib.h"
+#include "autherror.h"
 
 void status_print(int status);
 
@@ -32,6 +33,10 @@ int main(int argc, char** argv) {
         return 0;
     }
     if(!strcmp(argv[1], "Authenticate")){
+        if(argc > 4) {
+            printf("Error: too many arguments for Authenticate\n");
+            return 0;
+        }
         if(argc < 3) {
             status_print(USER_MISSING);
             return 0;
