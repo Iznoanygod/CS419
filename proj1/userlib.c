@@ -9,10 +9,12 @@ int add_user(char* username, char* password) {
     char user[512];
     while(fscanf(fp, "%s %*[^\n]\n", user) != EOF) {
         if(!strcmp(user, username)){
+            fclose(fp);
             return USER_EXISTS;
         }
     }
     fprintf(fp, "%s %s\n", username, password);
+    fclose(fp);
     return SUCCESS;
 }
 
@@ -22,6 +24,7 @@ int authenticate(char* username, char* password) {
     char pass[512];
     while(fscanf(fp, "%s %[^\n]\n", user, pass) != EOF) {
         if(!strcmp(user, username)){
+            fclose(fp);
             if(!strcmp(pass, password)){
                 return SUCCESS;
             }
@@ -29,5 +32,19 @@ int authenticate(char* username, char* password) {
                 return BAD_PASSWORD;
         }
     }
+    fclose(fp);
     return NO_SUCH_USER;
+}
+
+int user_exists(char* username) {
+    FILE *fp = fopen("users.txt", "a+");
+    char user[512];
+    while(fscanf(fp, "%s %*[^\n]\n", user) != EOF) {
+        if(!strcmp(user, username)){
+            fclose(fp);
+            return 1;
+        }
+    }
+    fclose(fp);
+    return 0;
 }

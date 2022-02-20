@@ -5,4 +5,6 @@ int add_user(char* username, char* password);
 
 int authenticate(char* username, char* password);
 
+int user_exists(char* username);
+
 #endif
