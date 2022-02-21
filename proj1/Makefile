@@ -6,7 +6,8 @@ all:
 	$(CC) userlib.c $(C_FLAGS) -c -o userlib.o
 	$(CC) domainlib.c $(C_FLAGS) -c -o domainlib.o
 	$(CC) typelib.c $(C_FLAGS) -c -o typelib.o
-	$(CC) auth.c $(C_FLAGS) -o auth userlib.o domainlib.o typelib.o
+	$(CC) accesslib.c $(C_FLAGS) -c -o accesslib.o
+	$(CC) auth.c $(C_FLAGS) -o auth userlib.o domainlib.o typelib.o accesslib.o
 debug:
 	$(CC) userlib.c $(C_FLAGS) $(C_DEBUG_FLAGS) -c -o userlib.o
 	$(CC) domainlib.c $(C_FLAGS) $(C_DEBUG_FLAGS) -c -o domainlib.o

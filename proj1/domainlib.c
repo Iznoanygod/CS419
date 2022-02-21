@@ -24,6 +24,20 @@ int set_domain(char* username, char* domain) {
     return SUCCESS;
 }
 
+int in_domain(char* username, char* domain) {
+    char domain_file[512];
+    snprintf(domain_file, 512, "%s_domain.txt", domain);
+    FILE *fp = fopen(domain_file, "r");
+    if(fp == NULL)
+        return 0;
+    char user[512];
+    while(fscanf(fp, "%[^\n]\n", user) != EOF) {
+        if(!strcmp(user,username))
+            return 1;
+    }
+    return 0;
+}
+
 void domain_info(char* domain) {
     char domain_file[512];
     snprintf(domain_file, 512, "%s_domain.txt", domain);
