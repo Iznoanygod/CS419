@@ -33,7 +33,7 @@ char *sha256(const char *str, int len) {
 
 int main(int argc, char **argv) {
     if(argc != 3) {
-        printf("Error: invalid number of arguemnts\n");
+        printf("ERROR: invalid number of arguemnts\n");
         printf("Usage: pow-check file header\n");
         return 0;
     }
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     header_file = fopen(argv[2], "r");
 
     if(input_file == NULL || header_file == NULL) {
-        printf("Error: cannot open file\n");
+        printf("ERROR: cannot open file\n");
         return 0;
     }
 
@@ -70,6 +70,9 @@ int main(int argc, char **argv) {
         if(!strcmp(tag, "Initial-hash:")){
             initial_hash = 1;
             if(strcmp(message_hash_string, val)) {
+                printf("ERROR: initial hashes don't match\n");
+                printf("\thash in header: %s\n", val);
+                printf("\tfile hash: %s\n", message_hash_string);
                 printf("fail\n");
                 return 0;
             }
@@ -89,7 +92,15 @@ int main(int argc, char **argv) {
             strcpy(pow_message, val);
         }
     }
-    if(pow & zero_bit & hash == 0) {
+    if(pow == 0 || zero_bit == 0 || hash == 0 || initial_hash == 0) {
+        if(!initial_hash)
+            printf("ERROR: missing Initial-hash in header\n");
+        if(!zero_bit)
+            printf("ERROR: missing Leading-zero-bits in header\n");
+        if(!pow)
+            printf("ERROR: missing Proof-of-work in header\n");
+        if(!hash)
+            printf("ERROR: missing Hash in header\n");
         printf("fail\n");
         return 0;
     }
@@ -98,6 +109,7 @@ int main(int argc, char **argv) {
     char *final_hash = sha256(combined_message, strlen(combined_message));
     int final_leading = leading_bits(final_hash, SHA256_DIGEST_LENGTH);
     if(final_leading != leading_zero_bits){
+        printf("ERROR: incorrect Leading-bits value: %d, expected %d\n", leading_zero_bits, final_leading);
         printf("fail\n");
         return 0;
     }
@@ -106,6 +118,9 @@ int main(int argc, char **argv) {
         sprintf(final_hash_string + 2*i, "%02hhx", final_hash[i] &0xff);
     }
     if(strcmp(final_hash_string, valid_hash)) {
+        printf("ERROR: pow hash does not match Hash header\n");
+        printf("\texpected: %s\n", final_hash_string);
+        printf("\theader has: %s\n", valid_hash);
         printf("fail\n");
         return 0;
     }
